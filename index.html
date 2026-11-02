@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MÈO THẦN TÀI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #fff1f5;
+      --surface: #ffffff;
+      --ink: #3f2433;
+      --muted: #8a6674;
+      --primary: #e989ab;
+      --primary-deep: #c45d86;
+      --line: #f3d5df;
+      --blush: #ffe4ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Be Vietnam Pro", sans-serif;
+      line-height: 1.5;
+    }
+    button { font-family: inherit; cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 2px solid var(--primary-deep); outline-offset: 2px; }
+    .wrap { max-width: 32rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    .brand {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.25rem;
+    }
+    .kicker {
+      display: flex; align-items: center; gap: 0.25rem;
+      margin: 0 0 0.25rem; color: var(--primary-deep);
+      font-family: Nunito, sans-serif; font-weight: 700; font-size: 0.875rem;
+    }
+    h1 { margin: 0; font-family: Nunito, sans-serif; font-size: 1.875rem; line-height: 1.15; }
+    .paw { width: 2rem; height: 2rem; color: var(--primary); flex: none; }
+    .paw-sm { width: 1rem; height: 1rem; }
+    .cats {
+      display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem; margin: 0 -1rem 1rem; padding-left: 1rem; padding-right: 1rem;
+    }
+    .cats::-webkit-scrollbar { height: 0; }
+    .cat {
+      flex: none; height: 2.75rem; padding: 0 1rem; border-radius: 999px;
+      border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+      font-family: Nunito, sans-serif; font-weight: 700;
+    }
+    .cat.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .hint { color: var(--muted); font-size: 0.875rem; margin: 0 0 0.75rem; }
+    .list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+    .card {
+      width: 100%; display: flex; align-items: center; gap: 0.75rem; text-align: left;
+      background: var(--surface); border: 1px solid var(--line); border-radius: 1.25rem; padding: 0.75rem;
+    }
+    .card img { width: 3.5rem; height: 3.5rem; border-radius: 999px; object-fit: cover; border: 1px solid var(--blush); flex: none; }
+    .card .name { display: block; font-family: Nunito, sans-serif; font-weight: 800; font-size: 1.125rem; }
+    .card .age { display: block; color: var(--muted); font-size: 0.875rem; }
+    .card .grow { min-width: 0; flex: 1; }
+    .back {
+      display: inline-flex; align-items: center; gap: 0.25rem; height: 2.75rem;
+      background: none; border: 0; color: var(--primary-deep); font-family: Nunito, sans-serif; font-weight: 700; padding: 0;
+    }
+    .hero {
+      display: block; width: min(100%, 16rem); aspect-ratio: 1; object-fit: cover; margin: 0 auto 1.25rem;
+      border-radius: 1.25rem; border: 1px solid var(--line);
+    }
+    h2 { text-align: center; font-family: Nunito, sans-serif; font-size: 1.875rem; margin: 0; }
+    .age-lg { text-align: center; color: var(--primary-deep); font-weight: 600; margin: 0.25rem 0 1.25rem; }
+    .box { background: var(--surface); border: 1px solid var(--line); border-radius: 1.25rem; padding: 1rem; margin-bottom: 1.25rem; }
+    .box h3 { display: flex; align-items: center; gap: 0.25rem; margin: 0 0 0.25rem; font-family: Nunito, sans-serif; }
+    .box p { margin: 0; }
+    .ticket { background: var(--blush); border: 1px dashed var(--primary); border-radius: 1.25rem; padding: 1rem; }
+    #pass-guide { margin: 0 0 1rem; font-weight: 700; }
+    #btn-chat {
+      width: 100%; height: 3rem; border-radius: 999px; border: 0;
+      background: var(--primary); color: white; font-family: Nunito, sans-serif; font-weight: 800; font-size: 1rem;
+    }
+    #btn-chat.ready { background: var(--surface); color: var(--primary-deep); border: 2px solid var(--primary-deep); }
+    .status { text-align: center; color: var(--muted); font-size: 0.875rem; margin: 0.5rem 0 0; }
+    .warn { text-align: center; color: var(--primary-deep); font-size: 0.875rem; font-weight: 600; margin: 0.5rem 0 0; }
+    .hidden { display: none !important; }
+    .mask {
+      position: fixed; inset: 0; background: rgba(63, 36, 51, 0.4);
+      display: flex; align-items: flex-end; justify-content: center; padding: 1rem;
+    }
+    @media (min-width: 640px) { .mask { align-items: center; } }
+    .modal { width: min(100%, 24rem); background: white; border-radius: 1.25rem; padding: 1.25rem; }
+    .modal h2 { text-align: left; font-size: 1.25rem; margin-bottom: 0.25rem; }
+    .modal .sub { color: var(--muted); font-size: 0.875rem; margin: 0 0 1rem; }
+    label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem; }
+    input {
+      width: 100%; height: 3rem; border-radius: 1rem; border: 1px solid var(--line); padding: 0 0.75rem; font: inherit; margin-bottom: 0.75rem;
+    }
+    #password-error { color: var(--primary-deep); font-size: 0.875rem; font-weight: 600; margin: 0 0 0.75rem; }
+    #btn-confirm {
+      width: 100%; height: 3rem; border: 0; border-radius: 999px; background: var(--primary); color: white;
+      font-family: Nunito, sans-serif; font-weight: 800;
+    }
+    .close { width: 100%; height: 2.75rem; margin-top: 0.5rem; border: 0; background: none; color: var(--muted); font-weight: 600; }
+    .empty { text-align: center; color: var(--muted); background: white; border: 1px solid var(--line); border-radius: 1.25rem; padding: 2rem 1rem; }
+    @media (prefers-reduced-motion: no-preference) {
+      .screen { animation: in 220ms ease; }
+      @keyframes in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="brand">
+      <div>
+        <p class="kicker">
+          <svg class="paw paw-sm" viewBox="0 0 32 32" aria-hidden="true"><g fill="currentColor"><circle cx="8" cy="12" r="3.2"/><circle cx="16" cy="8" r="3.2"/><circle cx="24" cy="12" r="3.2"/><ellipse cx="16" cy="20" rx="8" ry="6.5"/></g></svg>
+          Nhà của những câu chuyện
+        </p>
+        <h1>MÈO THẦN TÀI</h1>
+      </div>
+      <svg class="paw" viewBox="0 0 32 32" aria-hidden="true"><g fill="currentColor"><circle cx="8" cy="12" r="3.2"/><circle cx="16" cy="8" r="3.2"/><circle cx="24" cy="12" r="3.2"/><ellipse cx="16" cy="20" rx="8" ry="6.5"/></g></svg>
+    </header>
+
+    <!-- MÀN HÌNH 1: danh mục + danh sách nhân vật -->
+    <section id="screen-list" class="screen">
+      <div id="category-bar" class="cats" role="tablist" aria-label="Danh mục"></div>
+      <p class="hint">Chạm vào một bạn để xem hồ sơ.</p>
+      <ul id="character-list" class="list"></ul>
+    </section>
+
+    <!-- MÀN HÌNH 2: chi tiết + khu lấy pass. Mặc định ẩn. -->
+    <section id="screen-detail" class="screen hidden">
+      <button id="btn-back" class="back" type="button">← Quay lại</button>
+      <img id="detail-image" class="hero" alt="" />
+      <h2 id="detail-name"></h2>
+      <p id="detail-age" class="age-lg"></p>
+      <div class="box">
+        <h3>
+          <svg class="paw paw-sm" viewBox="0 0 32 32" aria-hidden="true"><g fill="currentColor"><circle cx="8" cy="12" r="3.2"/><circle cx="16" cy="8" r="3.2"/><circle cx="24" cy="12" r="3.2"/><ellipse cx="16" cy="20" rx="8" ry="6.5"/></g></svg>
+          backstory
+        </h3>
+        <p id="detail-look"></p>
+      </div>
+      <div class="ticket">
+        <p id="pass-guide"></p>
+        <button id="btn-chat" type="button">Chat Ngay</button>
+        <p id="chat-status" class="status hidden">Đã mở trang sản phẩm. Bấm tiếp để nhập mật khẩu.</p>
+        <p id="popup-warn" class="warn hidden">Trình duyệt đang chặn cửa sổ mới. Hãy cho phép popup rồi bấm lại.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- Hộp nhập mật khẩu, chỉ hiện ở lần bấm Chat Ngay thứ 2 -->
+  <div id="modal-mask" class="mask hidden">
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 id="modal-title">Nhập mật khẩu</h2>
+      <p id="modal-sub" class="sub"></p>
+      <form id="pass-form">
+        <label for="password-input">Mật khẩu</label>
+        <input id="password-input" autocomplete="off" />
+        <p id="password-error" class="hidden"></p>
+        <button id="btn-confirm" type="submit">Xác nhận</button>
+      </form>
+      <button id="btn-close" class="close" type="button">Đóng</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // DỮ LIỆU NHÂN VẬT — CHỈ CẦN SỬA KHỐI NÀY ĐỂ THÊM NGƯỜI MỚI
+    // ============================================================
+    //
+    // 1) Thêm tên danh mục vào mảng categories (đúng chính tả, vì nút lấy từ đây).
+    // 2) Thêm một object vào mảng characters.
+    // 3) category của nhân vật phải khớp ĐÚNG một tên trong categories.
+    //
+    // Mỗi nhân vật gồm:
+    //   id          mã riêng, không dấu, không khoảng trắng, không trùng
+    //   name        tên hiển thị
+    //   category    danh mục
+    //   age         tuổi (số)
+    //   backstory  đoạn mô tả quá khứ
+    //   image       link ảnh https://...  HOẶC mã ảnh mẫu "linh-chi" / "ha-vy"
+    //   campaigns   MẢNG chiến dịch. Mỗi lần mở chi tiết sẽ BỐC NGẪU NHIÊN 1 chiến dịch,
+    //               nên pass + link Shopee + link AI sẽ đổi khi thoát ra vào lại.
+    //
+    // Mỗi chiến dịch gồm:
+    //   password    mật khẩu đúng
+    //   shopeeUrl   link tiếp thị Shopee (mở tab mới khi bấm Chat Ngay LẦN 1)
+    //   aiUrl       link Google AI (chỉ đi tới khi nhập ĐÚNG mật khẩu)
+    //
+    // Cách đặt password cho khớp câu hướng dẫn hiện trên web:
+    //   Lấy tên sản phẩm gắn với link → bỏ dấu → bỏ khoảng trắng
+    //   → viết hoa chữ cái đầu mỗi từ rồi nối liền.
+    //   Ví dụ: "Son môi hồng" → Sonmoihong
+    //   Số {X} trên web tự đếm bằng password.length, không cần ghi tay.
+
+    const categories = ["A", "B"];
+
+    const characters = [
+      {
+        id: "hoang-minh",
+        name: "Hoàng Minh",
+        category: "A",
+        age: 18,
+        backstory: `Không ai còn giữ được ngày tháng chính xác của buổi chiều ấy — chỉ còn sót lại vài khung hình rời rạc trong trí nhớ của những người từng chứng kiến: cổng sắt cao của biệt phủ họ Hoàng dưới ánh nắng cuối hạ, tiếng gào thét lẫn tiếng súng, và một cậu bé sáu tuổi bị kéo vào bóng tối chỉ trong vài giây.<br>Hoàng Minh được giải cứu sau bốn mươi tám giờ. Nhưng thứ trở về không còn là đứa trẻ thông minh, lanh lợi trước đó. Cậu nằm trên giường bệnh viện, mắt mở nhưng không nhìn, không khóc, không cười, không nói. Các bác sĩ tâm lý hàng đầu lần lượt bất lực. Gia đình gọi đó là “búp bê pha lê” — thứ gì cũng vỡ nếu chạm mạnh.<br>Rồi một buổi chiều, cánh cửa phòng bệnh bị đẩy nhẹ. Một đứa trẻ khoảng cùng tuổi, con của vú nuôi, vô tình lạc vào. Không sợ vẻ mặt trống rỗng của cậu, đứa bé trèo lên giường, chìa bàn tay dính vụn bánh và cười toe toét:<br>“Anh… chơi!”<br>Lần đầu tiên sau vụ bắt cóc, Hoàng Minh mở miệng. Cậu vội vàng đỡ lấy đứa trẻ đang suýt ngã, giọng khàn và khô:<br>“Đừng ngã…”<br>Từ khoảnh khắc đó, não bộ của cậu gắn kết cố định một điều: người nhỏ bé ấy bằng sự sống, bằng ánh sáng, bằng thứ duy nhất còn có thể kéo cậu ra khỏi bóng tối năm sáu tuổi. Anh chỉ ngủ ngon khi ngửi thấy mùi hương quen thuộc của {{User}}. Chỉ thật sự bình tĩnh khi được chạm vào da thịt {{User}}. Mọi hành vi ôm ấp, đè ép, dính lấy sau này thực chất chỉ là phản xạ kiểm tra xem nguồn sống của mình còn tồn tại hay không.<br>Hai đứa lớn lên không còn ranh giới. Tắm chung. Ngủ chung. Chia sẻ đồ ăn. Nắm tay đi học. Chui chung chăn. Minh cưng chiều {{User}} gần như mù quáng, vì trong thâm tâm luôn sợ rằng nếu không giữ chặt, ánh sáng duy nhất ấy sẽ biến mất. Việc chăm sóc từ những việc nhỏ nhất — ăn uống, quần áo, thậm chí vệ sinh khi cần — với anh không phải là điều gì lệch lạc, mà là bảo trì báu vật quý giá nhất mà anh suýt mất.<br>Thời gian trôi. Minh trở thành thiếu gia thừa kế duy nhất của Tập đoàn Hoàng, thủ khoa nhiều năm liền của trường THPT Quốc tế AU, người yêu danh chính ngôn thuận của thiên kim tiểu thư Yến Vy. Bên ngoài, anh vẫn là hình mẫu hoàn hảo: thư sinh, dịu dàng, lịch thiệp. Bên trong, với {{User}}, anh vẫn giữ nguyên nhận thức của ngày đầu gặp mặt — cậu vẫn là “cục bông” ngốc nghếch của riêng anh, không phải con gái, không phải đối tượng để yêu theo nghĩa thông thường.<br><br>Cho đến tận bây giờ, ở tuổi mười tám, thói quen ấy vẫn chưa từng đứt.`,
+        image: "LINK_ANH_CUA_BAN_DAN_VAO_DAY",
+        image: "hoang-minh",
+        campaigns: [
+          {
+            // Sản phẩm "Son môi hồng" → pass SonMoiHong, dài 10
+            password: "SonMoiHong",
+            shopeeUrl: "https://shopee.vn/search?keyword=son%20moi%20hong",
+            aiUrl: "https://gemini.google.com/app",
+          },
+          {
+            // Sản phẩm "Sổ tay" → pass SoTay, dài 5
+            password: "SoTay",
+            shopeeUrl: "https://shopee.vn/search?keyword=so%20tay",
+            aiUrl: "https://aistudio.google.com/",
+          },
+        ],
+      },
+      {
+        id: "ha-vy",
+        name: "Hạ Vy",
+        category: "B",
+        age: 22,
+        backstory:
+          "Tóc đen dài buông sau lưng, cài trâm ngọc nhỏ. Ánh mắt điềm tĩnh. Mặc áo dài cách tân màu kem, điểm hoa đào nhạt ở tay áo.",
+        image: "ha-vy",
+        campaigns: [
+          {
+            // Sản phẩm "Kem dưỡng da" → pass KemDuongDa, dài 10
+            password: "KemDuongDa",
+            shopeeUrl: "https://shopee.vn/search?keyword=kem%20duong%20da",
+            aiUrl: "https://gemini.google.com/app",
+          },
+          {
+            // Sản phẩm "Trà sữa" → pass TraSua, dài 6
+            password: "TraSua",
+            shopeeUrl: "https://shopee.vn/search?keyword=tra%20sua",
+            aiUrl: "https://aistudio.google.com/",
+          },
+        ],
+      },
+
+      // --- Sao chép khối trên để thêm nhân vật. Nhớ đủ campaigns (ít nhất 1). ---
+    ];
+
+    // Ảnh mẫu. Khi thêm nhân vật, dán link https://... vào field image là đủ.
+    const sampleImages = {
+      "linh-chi": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23ffe4ee'/%3E%3Ccircle cx='40' cy='32' r='14' fill='%23e7b39a'/%3E%3Cpath d='M18 74c4-16 14-24 22-24s18 8 22 24' fill='%23e989ab'/%3E%3C/svg%3E",
+      "ha-vy": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23fff6ea'/%3E%3Ccircle cx='40' cy='32' r='14' fill='%23e7b39a'/%3E%3Cpath d='M16 76c6-18 14-26 24-26s18 8 24 26' fill='%23f3d5c4'/%3E%3C/svg%3E"
+    };
+
+    // ============================================================
+    // TRẠNG THÁI ĐANG XEM — không cần sửa khi thêm nhân vật
+    // ============================================================
+    let currentCategory = categories[0];
+    let currentCharacter = null; // nhân vật đang mở ở màn 2
+    let currentCampaign = null;  // chiến dịch ngẫu nhiên vừa bốc
+    let chatClicks = 0;          // 0 = lần bấm tới mở Shopee; từ 1 trở đi mở ô mật khẩu
+
+    const screenList = document.getElementById("screen-list");
+    const screenDetail = document.getElementById("screen-detail");
+    const categoryBar = document.getElementById("category-bar");
+    const characterList = document.getElementById("character-list");
+    const passGuide = document.getElementById("pass-guide");
+    const btnChat = document.getElementById("btn-chat");
+    const chatStatus = document.getElementById("chat-status");
+    const popupWarn = document.getElementById("popup-warn");
+    const modalMask = document.getElementById("modal-mask");
+    const passwordInput = document.getElementById("password-input");
+    const passwordError = document.getElementById("password-error");
+    const modalSub = document.getElementById("modal-sub");
+
+    function resolveImage(image) {
+      return sampleImages[image] || image;
+    }
+
+    // Vẽ thanh danh mục. Bấm nút thì đổi danh mục và vẽ lại danh sách.
+    function renderCategories() {
+      categoryBar.innerHTML = "";
+      categories.forEach((name) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "cat" + (name === currentCategory ? " active" : "");
+        button.textContent = name;
+        button.setAttribute("role", "tab");
+        button.setAttribute("aria-selected", name === currentCategory ? "true" : "false");
+        button.addEventListener("click", () => {
+          currentCategory = name;
+          renderCategories();
+          renderList();
+        });
+        categoryBar.appendChild(button);
+      });
+    }
+
+    // Vẽ danh sách nhân vật thuộc danh mục đang chọn.
+    function renderList() {
+      characterList.innerHTML = "";
+      const items = characters.filter((item) => item.category === currentCategory);
+      if (items.length === 0) {
+        const empty = document.createElement("li");
+        empty.className = "empty";
+        empty.textContent = "Danh mục này chưa có nhân vật.";
+        characterList.appendChild(empty);
+        return;
+      }
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "card";
+
+        const img = document.createElement("img");
+        img.src = resolveImage(item.image);
+        img.alt = "";
+
+        const text = document.createElement("span");
+        text.className = "grow";
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = item.name;
+        const age = document.createElement("span");
+        age.className = "age";
+        age.textContent = item.age + " tuổi";
+        text.append(name, age);
+
+        const chevron = document.createElement("span");
+        chevron.setAttribute("aria-hidden", "true");
+        chevron.textContent = "›";
+        chevron.style.color = "var(--primary)";
+        chevron.style.fontSize = "1.5rem";
+
+        button.append(img, text, chevron);
+        button.addEventListener("click", () => openDetail(item.id));
+        li.appendChild(button);
+        characterList.appendChild(li);
+      });
+    }
+
+    // Mỗi lần vào màn chi tiết: bốc ngẫu nhiên 1 chiến dịch và reset số lần bấm.
+    function openDetail(id) {
+      const found = characters.find((item) => item.id === id);
+      if (!found || found.campaigns.length === 0) return;
+      currentCharacter = found;
+      currentCampaign = found.campaigns[Math.floor(Math.random() * found.campaigns.length)];
+      chatClicks = 0;
+      closeModal();
+
+      document.getElementById("detail-image").src = resolveImage(found.image);
+      document.getElementById("detail-image").alt = "Chân dung " + found.name;
+      document.getElementById("detail-name").textContent = found.name;
+      document.getElementById("detail-age").textContent = found.age + " tuổi";
+      document.getElementById("detail-look").innerHTML = found.backstory;
+
+      // {X} = số ký tự của mật khẩu vừa bốc. Đổi campaign là câu này đổi theo.
+      passGuide.textContent =
+        "Hướng dẫn lấy pass: Tên của sản phẩm được gắn link, không dấu, không cách, viết hoa chữ cái đầu. Pass có " +
+        currentCampaign.password.length +
+        " chữ cái.";
+
+      btnChat.textContent = "Chat Ngay";
+      btnChat.classList.remove("ready");
+      chatStatus.classList.add("hidden");
+      popupWarn.classList.add("hidden");
+
+      screenList.classList.add("hidden");
+      screenDetail.classList.remove("hidden");
+      window.scrollTo(0, 0);
+    }
+
+    function showList() {
+      closeModal();
+      screenDetail.classList.add("hidden");
+      screenList.classList.remove("hidden");
+    }
+
+    // LẦN 1: mở link Shopee tab mới, ghi nhận đã bấm, đổi nút sang trạng thái lần 2.
+    // LẦN 2 trở đi: không mở Shopee nữa, chỉ hiện ô nhập mật khẩu.
+    function onChatClick() {
+      if (!currentCampaign) return;
+      if (chatClicks < 1) {
+        const tab = window.open(currentCampaign.shopeeUrl, "_blank");
+        if (!tab) {
+          popupWarn.classList.remove("hidden");
+          return;
+        }
+        try { tab.opener = null; } catch (err) { /* tab đã tách */ }
+        popupWarn.classList.add("hidden");
+        chatClicks = 1;
+        btnChat.textContent = "Nhập pass để chat";
+        btnChat.classList.add("ready");
+        chatStatus.classList.remove("hidden");
+        return;
+      }
+      openModal();
+    }
+
+    function openModal() {
+      passwordInput.value = "";
+      passwordError.textContent = "";
+      passwordError.classList.add("hidden");
+      modalSub.textContent =
+        "Pass có " + currentCampaign.password.length + " chữ cái. Viết hoa chữ cái đầu, không dấu, không cách.";
+      modalMask.classList.remove("hidden");
+      passwordInput.focus();
+    }
+
+    function closeModal() {
+      modalMask.classList.add("hidden");
+    }
+
+    // Đúng pass → chuyển tới link Google AI của chiến dịch đang bốc.
+    // Sai pass → báo lỗi, không chuyển trang.
+    function onConfirm(event) {
+      event.preventDefault();
+      if (!currentCampaign) return;
+      const typed = passwordInput.value.trim();
+      if (typed === currentCampaign.password) {
+        window.location.assign(currentCampaign.aiUrl);
+        return;
+      }
+      passwordError.textContent = "Mật khẩu không đúng, vui lòng kiểm tra lại tên sản phẩm!";
+      passwordError.classList.remove("hidden");
+    }
+
+    document.getElementById("btn-back").addEventListener("click", showList);
+    btnChat.addEventListener("click", onChatClick);
+    document.getElementById("pass-form").addEventListener("submit", onConfirm);
+    document.getElementById("btn-close").addEventListener("click", closeModal);
+    modalMask.addEventListener("click", (event) => {
+      if (event.target === modalMask) closeModal();
+    });
+
+    renderCategories();
+    renderList();
+  </script>
+</body>
+</html>
